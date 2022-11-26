@@ -5,22 +5,20 @@
 
 using namespace std;
 
-
-
 /*
  * \espaces équivalent entre le nom p1 et p2
- * \name : en fonction du nom adaptation de l'espace
+ * \param p1name nom du joueur 1
+ * \param p2name nom du joueur 2
  * \return void
  */
-void centerName(string name);
+void centerName(string p1name, string p2name);
 
 /*
- * \Affiche toutes les lettres en fonction de SIZE
- * \affiche des lettres
+ * \brief Affiche toutes les lettres en fonction de SIZE 
+ * \affiche des lettre en fonction de SIZE 
  * \return void
  */
 void albetGrid();
-
 
 /*
  * \brief Initialise le tableau à vid
@@ -54,7 +52,7 @@ void clearScreen();
  * \param someCoordi : les coordonnées valides stockées
  * \return true si les coordonnées sont valides, false sinon
  */
-bool checkCoordinate(std::string aPlace, Coordinate & sommeCoordi);
+bool checkCoordinate(string aPlace, Coordinate & sommeCoordi);
 
 /*
  * \brief place un navire dans la grille en vérifiant les règles
@@ -63,7 +61,7 @@ bool checkCoordinate(std::string aPlace, Coordinate & sommeCoordi);
  * \param aShip : le type de navire (donc sa taille)
  * \return true si le placement est valide et effectué, false sinon
  */
-//bool placeShip(Cell grid[][SIZE], Placement place, Ship ship);
+bool placeShip(Cell grid[][SIZE], Placement place, Ship ship);
 
 /*
  * \brief demande au joueur de placer chaque navire, vérifie les coordonnées
@@ -99,6 +97,7 @@ bool hitOrMiss(Cell aGrid[][SIZE], Coordinate someCoordi);
  * \param anOpponent : l'adversaire
  * \return void
  */
+
 void askPlayerToShot(Player& aPlayer, Player& anOpponent);
 
 /*
@@ -117,6 +116,12 @@ void randomPlacement(Player& aPlayer);
  */
 bool isBoatSank(Cell aGrid[][SIZE], int aRow, int aCol);
 
+/*
+ * \brief détermine si un joueur a gagné (tous ses bateaux sont coulés)
+ * \param aPlayer : le joueur
+ * \return true si le joueur a gagné
+ */
+bool isWinner(Player& aPlayer);
 
 
 
