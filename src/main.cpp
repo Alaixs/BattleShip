@@ -1,5 +1,5 @@
 //#v0.3
-//TODO : Put name in color
+//TODO : add boat placement
 #include <iostream>
 #include "typeDef.h"
 #include "functions.h"
