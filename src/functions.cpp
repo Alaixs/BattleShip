@@ -17,6 +17,17 @@ void albetGrid()
     }
 }
 
+void checkNameLength(string playerName)
+{
+         while (playerName.length() > SIZE || playerName == "")
+    {
+        cout << "Vous ne pouvez pas rentrer un pseudo vide ou de plus de "<< SIZE <<" charactere" << endl;
+        cout << "Rentrez a nouveau le nom du premier joueur svp" << endl;
+        cin >> playerName;
+    }
+
+}
+
 void centerName(string p1name, string p2name)
 //create a function to center the name of the player and put player 1 in blue
 {
@@ -61,8 +72,6 @@ void initializeGrid(Cell aGrid[][SIZE])
     }
 }
 
-//create a function to display the grid with aPlayer and anOpponent
-
 void clearScreen()
 {
 #if defined(__linux__) || defined(__APPLE__)
@@ -75,19 +84,13 @@ void clearScreen()
 #endif
 }
 
-/*
- * \brief Affiche les grilles des deux joueurs
- * \param aPlayer : le joueur
- * \param anOpponent l'adversaire
- * \return void
- */
 void displayGrid(Player & aPlayer, Player & anOpponent)
 {
     albetGrid();
     cout << endl;
     //boucle pour faire les grilles de jeu
     for (int i = 1; i < SIZE - 1; i++) {
-        // Player1 grid
+        // Player1 grids
         cout << i << ' ';
         if (i < 10) {
             cout << ' ';
@@ -118,5 +121,77 @@ void displayGrid(Player & aPlayer, Player & anOpponent)
             }
         }
         cout << endl;
+    }
+}
+
+
+bool checkCoordinate(string aPlace, Coordinate & someCoordi)
+{
+    //convert the letter in uppercase
+    aPlace[0] = toupper(aPlace[0]);
+
+if (aPlace.length() > 3 || aPlace.length() < 2 || aPlace[0] < 'A' || aPlace[0] > 'Z' || aPlace[1] <= '0')
+{
+    return false;
+}
+else
+{
+    int nbRow = stoi(aPlace.substr(1, aPlace.length()));
+    someCoordi.col = aPlace[0];
+    someCoordi.row = nbRow;
+    return true;
+
+}
+}
+
+bool placeShip(Cell grid[][SIZE], Placement place, Ship ship)
+{
+
+    //check if the ship is placed horizontally or vertically
+    if (place.dir == 'H')
+    {
+        //check if the ship is placed in the grid
+        if (place.coordi.col + ship > 'Z')
+        {
+            return false;
+        }
+        //check if there is no ship in the way
+        for (int i = 0; i < ship; i++)
+        {
+            if (grid[place.coordi.row][place.coordi.col].ship != NONE)
+            {
+                return false;
+            }
+        }
+        //place the ship 
+        for (int i = 0; i < ship; i++)
+        {
+            grid[place.coordi.row][place.coordi.col - 'A' + i].ship = ship;
+        }
+    }
+    else if (place.dir == 'V')
+    {
+        //check if the ship is placed in the grid
+        if (place.coordi.row + ship > SIZE)
+        {
+            return false;
+        }
+        //check if there is no ship in the way
+        for (int i = 0; i < ship; i++)
+        {
+            if (grid[place.coordi.row + i][place.coordi.col - 'A'].ship != NONE)
+            {
+                return false;
+            }
+        }
+        //place the ship 
+        for (int i = 0; i < ship; i++)
+        {
+            grid[place.coordi.row + i][place.coordi.col - 'A'].ship = ship;
+        }
+    }
+    else
+    {
+        return false;
     }
 }

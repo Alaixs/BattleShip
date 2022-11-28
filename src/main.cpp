@@ -3,9 +3,11 @@
 #include <iostream>
 #include "typeDef.h"
 #include "functions.h"
+#include "test.h"
 
 using namespace std;
 
+string aPlace;
 
 int main()
 {
@@ -43,24 +45,22 @@ int main()
     //Check if the name is not over SIZE characters and if it is not empty
     cout << "rentrer le nom du premier joueur" << endl;
     cin >> p1.name;
-        while (p1.name.length() > SIZE) {
-            cout << "Vous ne pouvez pas rentrer un pseudo de plus de "<< SIZE <<" charactere" << endl;
-            cout << "Rentrez a nouveau le nom du premier joueur svp" << endl;
-            cin >> p1.name;
-        }
+    checkNameLength(p1.name);
+    
     cout << "Rentrer le nom du deuxieme joueur" << endl;
     cin >> p2.name;
-        while (p2.name.length() > SIZE) {
-            cout << "Vous ne pouvez pas rentrer un pseudo de plus de "<< SIZE <<" charactere" << endl;
-            cout << "Rentrez a nouveau le nom du premier joueur svp" << endl;
-            cin >> p2.name;
-        }
+    checkNameLength(p2.name);
 
     centerName(p1.name, p2.name);
     cout << endl;
 
     displayGrid(p1, p2);
     cout << endl;
+
+test_structureDonnees();
+test_initializeGrid();
+test_checkCoordinate();
+test_placeShip();
 
 void clearScreen();
 }

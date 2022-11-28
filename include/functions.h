@@ -5,6 +5,14 @@
 
 using namespace std;
 
+
+/*
+* \brief Check if the name of the player is not over SIZE characters
+* \param playerName : the name of the player
+* \return true if the name is not over SIZE characters
+*/
+void checkNameLength(string playerName);
+
 /*
  * \espaces équivalent entre le nom p1 et p2
  * \param p1name nom du joueur 1
