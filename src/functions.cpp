@@ -124,6 +124,10 @@ void displayGrid(Player & aPlayer, Player & anOpponent)
     }
 }
 
+int letterToNumber(char letter)
+{
+    return (int) letter - 64;
+}
 
 bool checkCoordinate(string aPlace, Coordinate & someCoordi)
 {
@@ -145,53 +149,259 @@ else
 }
 
 bool placeShip(Cell grid[][SIZE], Placement place, Ship ship)
-{
 
+{
+    
     //check if the ship is placed horizontally or vertically
     if (place.dir == 'H')
     {
+        int colCoordi = letterToNumber(place.coordi.col);
+        cout << "colCoordi = " << colCoordi << endl;
         //check if the ship is placed in the grid
-        if (place.coordi.col + ship > 'Z')
+        if (colCoordi + ship > SIZE - 1)
         {
+            cout << "Check if the ship is placed in the grid: " <<colCoordi + ship + 1 << "false!" << endl;
             return false;
         }
-        //check if there is no ship in the way
-        for (int i = 0; i < ship; i++)
+        //check if there is no ship in the way and around the ship
+        for (int iRow = place.coordi.row - 1; iRow < place.coordi.row + 1 + ship; iRow++)
         {
-            if (grid[place.coordi.row][place.coordi.col].ship != NONE)
+            for (int iCol = colCoordi - 1; iCol < colCoordi + 1 + ship; iCol++)
             {
-                return false;
+                if (grid[iRow][iCol].ship != NONE)
+                {
+                    cout << "Check if there is no ship in the way and around the ship: " << "false!" << endl;
+                    return false;
+                }
             }
         }
-        //place the ship 
-        for (int i = 0; i < ship; i++)
+        //place the ship
+        for (int iCol = colCoordi; iCol < colCoordi + ship; iCol++)
         {
-            grid[place.coordi.row][place.coordi.col - 'A' + i].ship = ship;
+            cout << "H Placing ship..." <<endl;
+            grid[place.coordi.row][iCol].ship = ship;
         }
-    }
+
+        }
     else if (place.dir == 'V')
     {
+        int colCoordi = letterToNumber(place.coordi.col);
         //check if the ship is placed in the grid
-        if (place.coordi.row + ship > SIZE)
+        if (place.coordi.row + ship - 1 > SIZE - 2)
         {
+            cout << "V Check if the ship is placed in the grid:" << endl;
             return false;
         }
-        //check if there is no ship in the way
-        for (int i = 0; i < ship; i++)
+        //check if there is no ship in the way and around the ship
+        for (int iRow = place.coordi.row - 1; iRow < place.coordi.row + ship + 1; iRow++)
         {
-            if (grid[place.coordi.row + i][place.coordi.col - 'A'].ship != NONE)
+            for (int iCol = colCoordi-1; iCol < colCoordi + ship ; iCol++)
             {
-                return false;
+                if (grid[iRow][iCol].ship != NONE)
+                {
+                    cout << grid[iRow][iCol].ship << endl;
+                    return false;
+                }
             }
         }
-        //place the ship 
-        for (int i = 0; i < ship; i++)
+        //place the ship
+        for (int iRow = place.coordi.row; iRow < place.coordi.row + ship; iRow++)
         {
-            grid[place.coordi.row + i][place.coordi.col - 'A'].ship = ship;
+            cout << "V Placing ship..." <<endl;
+            grid[iRow][colCoordi].ship = ship;
         }
     }
     else
     {
         return false;
+        cout << "Error: direction not valid" << endl;
     }
+    return true;
+}
+
+void askPlayerToPlace(Player & aPlayer, Player & anOpponent)
+{
+    string place;
+    Ship boat;
+    Coordinate coordi;
+    Placement placement;
+    bool valid = false;
+    //boucle pour placer les navires
+    for (int i = 0; i < NBSHIPS; i++)
+    {
+        do
+        {
+            //ask the player to place a ship
+            cout << "Player " << aPlayer.name << ", place your " << ships[i] << " cells ship" << endl;
+            cout << "Enter the coordinate and the direction (ex: A1H): ";
+            cin >> place;
+            boat = (Ship) i;
+            //check if the coordinate is valid
+            if (checkCoordinate(place, coordi))
+            {
+                placement.coordi = coordi;
+                placement.dir = place[2];
+                //check if the ship can be placed
+                if (placeShip(aPlayer.grid, placement, boat))
+                {
+                    valid = true;
+                }
+                else
+                {
+                    cout << "Error: the ship can't be placed" << endl;
+                }
+            }
+            else
+            {
+                cout << "Error: the coordinate is not valid" << endl;
+            }
+        } while (!valid);
+        //display the grid
+        displayGrid(aPlayer, anOpponent);
+        valid = false;
+    }
+}
+
+bool alreadyShot(Cell aGrid[][SIZE], Coordinate someCoordi)
+{
+    if (aGrid[someCoordi.row][letterToNumber(someCoordi.col)].state == HIT || aGrid[someCoordi.row][letterToNumber(someCoordi.col)].state == MISS || aGrid[someCoordi.row][letterToNumber(someCoordi.col)].state == SINK)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool hitOrMiss(Cell aGrid[][SIZE], Coordinate someCoordi)
+{
+    if (aGrid[someCoordi.row][letterToNumber(someCoordi.col)].ship != NONE)
+    {
+        aGrid[someCoordi.row][letterToNumber(someCoordi.col)].state = HIT;
+        return true;
+    }
+    else
+    {
+        aGrid[someCoordi.row][letterToNumber(someCoordi.col)].state = MISS;
+        return false;
+    }
+}
+
+void askPlayerToShoot(Player & aPlayer, Player & anOpponent)
+{
+    string place;
+    Coordinate coordi;
+    bool valid = false;
+    do
+    {
+        //ask the player to shoot
+        cout << "Player " << aPlayer.name << ", enter the coordinate of the cell you want to shoot (ex: A1): ";
+        cin >> place;
+        //check if the coordinate is valid
+        if (checkCoordinate(place, coordi))
+        {
+            //check if the cell has already been shot
+            if (alreadyShot(anOpponent.grid, coordi))
+            {
+                cout << "Error: the cell has already been shot" << endl;
+            }
+            else
+            {
+                //check if the shot is a hit or a miss
+                if (hitOrMiss(anOpponent.grid, coordi))
+                {
+                    cout << "Hit!" << endl;
+                }
+                else
+                {
+                    cout << "Miss!" << endl;
+                }
+                valid = true;
+            }
+        }
+        else
+        {
+            cout << "Error: the coordinate is not valid" << endl;
+        }
+    } while (!valid);
+}
+
+void randomPlacement(Player& aPlayer)
+{
+    Placement placement;
+    Ship boat;
+    bool valid = false;
+    //boucle pour placer les navires
+    for (int i = 0; i < NBSHIPS; i++)
+    {
+        do
+        {
+            boat = (Ship) i;
+            //random coordinate
+            placement.coordi.row = rand() % SIZE;
+            placement.coordi.col = rand() % SIZE;
+            //random direction
+            if (rand() % 2 == 0)
+            {
+                placement.dir = 'H';
+            }
+            else
+            {
+                placement.dir = 'V';
+            }
+            //check if the ship can be placed
+            if (placeShip(aPlayer.grid, placement, boat))
+            {
+                valid = true;
+            }
+        } while (!valid);
+        valid = false;
+    }
+}
+
+/*
+ * \brief détermine si un bateau est coulé (toutes ses cases sont HIT)
+ * \param aGrid : la grille
+ * \param aRow : la ligne
+ * \param aCol : la colonne
+ */
+bool isBoatSank(Cell aGrid[][SIZE], int aRow, int aCol)
+{
+    bool sank = true;
+    Ship boat = aGrid[aRow][aCol].ship;
+    //check if the ship is sank
+    for (int iRow = 0; iRow < SIZE; iRow++)
+    {
+        for (int iCol = 0; iCol < SIZE; iCol++)
+        {
+            if (aGrid[iRow][iCol].ship == boat && aGrid[iRow][iCol].state != HIT)
+            {
+                sank = false;
+            }
+        }
+    }
+    return sank;
+}
+
+/*
+ * \brief détermine si un joueur a gagné (tous ses bateaux sont coulés)
+ * \param aPlayer : le joueur
+ * \return true si le joueur a gagné
+ */
+bool isWinner(Player& aPlayer)
+{
+    bool winner = true;
+    //check if the player has won
+    for (int iRow = 0; iRow < SIZE; iRow++)
+    {
+        for (int iCol = 0; iCol < SIZE; iCol++)
+        {
+            if (aGrid[iRow][iCol].ship != NONE && aGrid[iRow][iCol].state != SINK)
+            {
+                winner = false;
+            }
+        }
+    }
+    return winner;
 }
