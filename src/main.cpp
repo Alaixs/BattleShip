@@ -1,5 +1,5 @@
 //#v0.3.5
-//TODO : fix input false // add decoration aroudn grid
+//TODO : fix grid visibility // add decoration aroudn grid
 #include <iostream>
 #include "typeDef.h"
 #include "functions.h"
