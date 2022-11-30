@@ -52,7 +52,7 @@ struct Cell
 // sa grille de jeu
 struct Player
 {
-    std::string name;
+    string name;
     int score;
     Cell grid[SIZE][SIZE];
 };
