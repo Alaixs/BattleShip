@@ -1,5 +1,5 @@
-//#v0.3
-//TODO : add boat placement
+//#v0.3.5
+//TODO : fix input false // add decoration aroudn grid
 #include <iostream>
 #include "typeDef.h"
 #include "functions.h"
@@ -21,7 +21,7 @@ int main()
     initializeGrid(p2.grid);
 
     //test to see if the grid is initialized correctly with a ship
-    p1.grid[2][5].ship = CARRIER;
+    //p1.grid[3][2].ship = CARRIER;
 
 
     cout  << R"(
@@ -57,10 +57,20 @@ int main()
     displayGrid(p1, p2);
     cout << endl;
 
-test_structureDonnees();
-test_initializeGrid();
-test_checkCoordinate();
-test_placeShip();
-
 void clearScreen();
+
+
+askPlayerToPlace(p1, p2);
+
 }
+
+
+
+//test_initializeGrid();
+//test_placeShip();
+//test_alreadyShot();
+//test_structureDonnees();
+//test_hitOrMiss();
+//test_isBoatSank();
+
+
