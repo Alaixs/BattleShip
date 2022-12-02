@@ -5,6 +5,11 @@
 
 using namespace std;
 
+/*
+ * \brief Fonction qui initialise la grille de jeu.
+ * \param grid La grille de jeu.
+ */
+void titleGame();
 
 /*
 * \brief Check if the name of the player is not over SIZE characters
@@ -123,13 +128,6 @@ void randomPlacement(Player& aPlayer);
  * \param aCol : la colonne
  */
 bool isBoatSank(Cell aGrid[][SIZE], int aRow, int aCol);
-
-/*
- * \brief détermine si un joueur a gagné (tous ses bateaux sont coulés)
- * \param aPlayer : le joueur
- * \return true si le joueur a gagné
- */
-bool isWinner(Player& aPlayer);
 
 
 
