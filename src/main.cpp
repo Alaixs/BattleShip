@@ -43,6 +43,7 @@ titleGame();
 clearScreen();
 
 askPlayerToPlace(p1, p2);
+askPlayerToPlace(p2, p1);
 
     while (p1.score > NBCELLS || p2.score > NBCELLS)
     {

@@ -1,4 +1,4 @@
-//#v0.4
+//#v0.4.2
 #include <iostream>
 #include <random>
 #include "typeDef.h"
@@ -8,7 +8,7 @@ using namespace std;
 void titleGame()
 {
     cout << R"(
- 
+
                      BATTLESHIP                 |__            ©
                                                 |\/
                                                 ---
@@ -23,7 +23,7 @@ void titleGame()
             |                                                                	BB-61/
              \_________________________________________________________________________|
             )" << '\n'
- 
+
           << endl << endl;
 }
 
@@ -137,7 +137,7 @@ void displayGrid(Player & aPlayer, Player & anOpponent)
         cout << "  " << i << ' ';
         if (i < 10) {
             cout << ' ';
-        } 
+        }
         //show only the state of the cell and not the ship
         for (int j = 1; j < SIZE - 1; j++) {
                 cout << (char) anOpponent.grid[i][j].state << ' ';
@@ -180,11 +180,9 @@ bool placeShip(Cell grid[][SIZE], Placement place, Ship ship)
     if (place.dir == 'H')
     {
         int colCoordi = letterToNumber(place.coordi.col);
-        cout << "colCoordi = " << colCoordi << endl;
         //check if the ship is placed in the grid
         if (colCoordi + ship > SIZE - 1)
         {
-            cout << "Check if the ship is placed in the grid: " <<colCoordi + ship + 1 << "false!" << endl;
             return false;
         }
         //check if there is no ship in the way and around the ship
@@ -194,7 +192,6 @@ bool placeShip(Cell grid[][SIZE], Placement place, Ship ship)
             {
                 if (grid[iRow][iCol].ship != NONE)
                 {
-                    cout << "Check if there is no ship in the way and around the ship: " << "false!" << endl;
                     return false;
                 }
             }
@@ -202,7 +199,6 @@ bool placeShip(Cell grid[][SIZE], Placement place, Ship ship)
         //place the ship
         for (int iCol = colCoordi; iCol < colCoordi + ship; iCol++)
         {
-            cout << "H Placing ship..." <<endl;
             grid[place.coordi.row][iCol].ship = ship;
         }
 
@@ -213,7 +209,6 @@ bool placeShip(Cell grid[][SIZE], Placement place, Ship ship)
         //check if the ship is placed in the grid
         if (place.coordi.row + ship - 1 > SIZE - 2)
         {
-            cout << "V Check if the ship is placed in the grid:" << endl;
             return false;
         }
         //check if there is no ship in the way and around the ship
@@ -223,7 +218,6 @@ bool placeShip(Cell grid[][SIZE], Placement place, Ship ship)
             {
                 if (grid[iRow][iCol].ship != NONE)
                 {
-                    cout << grid[iRow][iCol].ship << endl;
                     return false;
                 }
             }
@@ -231,14 +225,12 @@ bool placeShip(Cell grid[][SIZE], Placement place, Ship ship)
         //place the ship
         for (int iRow = place.coordi.row; iRow < place.coordi.row + ship; iRow++)
         {
-            cout << "V Placing ship..." <<endl;
             grid[iRow][colCoordi].ship = ship;
         }
     }
     else
     {
         return false;
-        cout << "Error: direction not valid" << endl;
     }
     return true;
 }
@@ -249,21 +241,22 @@ void askPlayerToPlace(Player & aPlayer, Player & anOpponent)
     Ship boat[5] = {CARRIER, CRUISER, DESTROYER, SUBMARINE, TORPEDO};
     Coordinate coordi;
     Placement placement;
+    bool state = false;
+    //adk if the player want to place the ship manually
+    cout << "Do you want to place your ships manually? (Y/N)" << endl;
+    cin >> userChoice;
+    //if the player want to place the ship randomly call function randomPlacement
+    if (userChoice == "N" || userChoice == "n")
+    {
+        cout << "Random placement" << endl;
+        randomPlacement(aPlayer);
+        displayGrid(aPlayer, anOpponent);
+    }
+
     //boucle pour placer les navires
     for (int i = 0; i < NBSHIPS; i++)
     {
-            //ask the player to place a ship
             displayGrid(aPlayer, anOpponent);
-            cout << "Player " << aPlayer.name << ", do you want to place your ship or made it random? (P/R)" << endl;
-            cin >> userChoice;
-            while (userChoice == "R" || userChoice == "r")
-                    {
-                        randomPlacement(aPlayer);
-                        displayGrid(aPlayer, anOpponent);
-                        cout << "Player " << aPlayer.name << ", your ship is placed randomly, if you want continue press Y or if you want replace randomly press R" << endl;
-                        cin >> userChoice;
-                    }
-               if (userChoice == "p" || userChoice == "P")
             cout << "Player " << aPlayer.name << ", place your " << shipName[i] << " cells ship" << endl;
             cout << "Enter the coordinate and the direction (ex: A1): " <<endl;
             cin >> place;
@@ -274,10 +267,9 @@ void askPlayerToPlace(Player & aPlayer, Player & anOpponent)
             placement.coordi.col = place[0];
             placement.coordi.row = nbRow;
             //check if the ship is valid and place it
-            if (!checkCoordinate(place, coordi) || !placeShip(aPlayer.grid, placement, boat[i]))
-            {
-                while (!checkCoordinate(place, coordi) || !placeShip(aPlayer.grid, placement, boat[i]))
+            while (!checkCoordinate(place, coordi) || !placeShip(aPlayer.grid, placement, boat[i]))
                 {
+
                     cout << "Invalid placement, please enter a valid placement: ";
                     cin >> place;
                     cout << "Enter the direction (H or V): ";
@@ -287,52 +279,12 @@ void askPlayerToPlace(Player & aPlayer, Player & anOpponent)
                     placement.coordi.col = place[0];
                     placement.coordi.row = nbRow;
                 }
+            displayGrid(aPlayer, anOpponent);
 
-            }
-                
-            
 
-                placeShip(aPlayer.grid, placement, boat[i]);
         //display the grid
         clearScreen();
         }
-        for (int i = 0; i < NBSHIPS; i++)
-    {
-        {//dont show the aplayer grid to the aplayer
-
-
-            //ask the player to place a ship
-            //when an opponent is choosing the placement of the ships hide the grid of aPlayer
-            displayGrid(anOpponent, aPlayer);
-            cout << "Player " << anOpponent.name << ", place your " << shipName[i] << " cells ship" << endl;
-            cout << "Enter the coordinate and the direction (ex: A1): " <<endl;
-            cin >> place;
-            cout << "Enter the direction (H or V): ";
-            cin >> placement.dir;
-            placement.dir = toupper(placement.dir);
-            int nbRow = stoi(place.substr(1, place.length()));
-            placement.coordi.col = place[0];
-            placement.coordi.row = nbRow;
-            //check if the ship is valid and place it
-
-                while (!placeShip(anOpponent.grid, placement, boat[i]) || !checkCoordinate(place, coordi))
-                {
-                    cout << "Invalid placement, please enter a valid placement: ";
-                    cin >> place;
-                    cout << "Enter the direction (H or V): ";
-                    cin >> placement.dir;
-                    placement.dir = toupper(placement.dir);
-                    int nbRow = stoi(place.substr(1, place.length()));
-                    placement.coordi.col = place[0];
-                    placement.coordi.row = nbRow;
-                }
-
-
-                placeShip(anOpponent.grid, placement, boat[i]);
-        //display the grid
-        clearScreen();
-    }
-}
 }
 
 bool alreadyShot(Cell aGrid[][SIZE], Coordinate someCoordi)
@@ -401,35 +353,33 @@ void askPlayerToShot(Player& aPlayer, Player& anOpponent)
 
 void generateNumber(int& someNumber)
 {
-    someNumber = 2;
-
+    const int MIN=0, MAX=10;
+     random_device rd;
+     default_random_engine eng(rd());
+     uniform_int_distribution<int> distr(MIN, MAX);
+     cout << distr(eng) << endl;
+     someNumber= distr(eng);
 }
 
 void randomPlacement(Player& aPlayer)
 {
     Placement placement;
-    string place;
-    Coordinate coordi;
-    Ship boat;
     bool valid = false;
-    int direction, colcoordi;
-    
+    int colcoordi;
+    Ship boat[5] = {CARRIER, CRUISER, DESTROYER, SUBMARINE, TORPEDO};
 
 //random placement of the ships with char
 
-    for (int i = 1; i < NBSHIPS; i++)
+    for (int i = 0; i < NBSHIPS ; i++)
     {
+
         do {
-        boat = static_cast<Ship>(i);
-            //generate a random coordinate
-            //placement col is a char
-            generateNumber(coordi.row);
+            valid = false;
+            generateNumber(placement.coordi.row);
             generateNumber(colcoordi);
-            colcoordi += 64; 
+            colcoordi += 65;
             placement.coordi.col = colcoordi;
-            //generate a random direction
-            generateNumber(direction);
-            if (coordi.row % 2 == 0)
+            if (placement.coordi.row % 2 == 0)
             {
                 placement.dir = 'H';
             }
@@ -438,14 +388,16 @@ void randomPlacement(Player& aPlayer)
                 placement.dir = 'V';
             }
             //check if the ship is valid and place it
-            if (placeShip(aPlayer.grid, placement, boat))
+            if (placeShip(aPlayer.grid, placement, boat[i]))
             {
+                cout << "passed" <<endl;
                 valid = true;
             }
         } while (!valid);
-            displayGrid(aPlayer, aPlayer);
-             
+
+
 }
+    displayGrid(aPlayer, aPlayer);
 }
 /*
  * \brief détermine si un bateau est coulé (toutes ses cases sont HIT)
