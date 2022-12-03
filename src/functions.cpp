@@ -401,11 +401,7 @@ void askPlayerToShot(Player& aPlayer, Player& anOpponent)
 
 void generateNumber(int& someNumber)
 {
-    const int MAX = SIZE - 'A', MIN = 0;
-    random_device rd;
-    default_random_engine eng(rd());
-    uniform_int_distribution<char> distr(MIN, MAX);
-    someNumber = distr(eng);
+    someNumber = 2;
 
 }
 
@@ -442,7 +438,7 @@ void randomPlacement(Player& aPlayer)
                 placement.dir = 'V';
             }
             //check if the ship is valid and place it
-            if (checkCoordinate(place, coordi) && placeShip(aPlayer.grid, placement, boat))
+            if (placeShip(aPlayer.grid, placement, boat))
             {
                 valid = true;
             }
