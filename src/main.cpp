@@ -1,5 +1,5 @@
-//#v0.4.2
-//TODO : remake askPlayerToPlace   // isboatsank bug remake plz//add decoration aroudn grid
+//#v0.4.5
+//TODO : isboatsank bug remake plz // Try to log output // Try to change some color
 #include <iostream>
 #include <fstream>
 #include "typeDef.h"
@@ -10,7 +10,9 @@ using namespace std;
 
 int main()
 {
-    system("color");
+    
+
+    system("color 9F");
     //Creation de joueur 1 et 2
     struct Player p1;
     struct Player p2;
@@ -18,15 +20,18 @@ int main()
     //call function to initialize the grid
     initializeGrid(p1.grid);
     initializeGrid(p2.grid);
+    p1.score = 0;
+    p2.score = 0;
 
     titleGame();
+   
 
     //Check if the name is not over SIZE characters and if it is not empty
-    cout << "rentrer le nom du premier joueur" << endl;
+    cout << "Enter the name of the first player" << endl;
     cin >> p1.name;
     checkNameLength(p1.name);
 
-    cout << "Rentrer le nom du deuxieme joueur" << endl;
+    cout << "Enter the name of the second player" << endl;
     cin >> p2.name;
     checkNameLength(p2.name);
 
@@ -35,21 +40,27 @@ int main()
 
 clearScreen();
 
+ofstream logs;
+logs.open("Coups joués.txt");
+logs << "Here are the moves you played during your last game.\n";
+logs <<"Player 1: " << p1.name << "Player 2: "<< p2.name << endl;
+
+
 askPlayerToPlace(p1, p2);
 askPlayerToPlace(p2, p1);
 
-    while (p1.score > NBCELLS || p2.score > NBCELLS)
+    while (p1.score <= NBCELLS || p2.score <= NBCELLS)
     {
         askPlayerToShot(p1, p2);
         askPlayerToShot(p2, p1);
     }
-    if (p1.score > NBCELLS)
+    if (p1.score == NBCELLS)
     {
-        cout << "Le joueur " << p1.name << " a gagne" << endl;
+        cout << "The Player " << p1.name << " has won" << endl;
     }
     else
     {
-        cout << "Le joueur " << p2.name << " a gagne" << endl;
+        cout << "The Player " << p2.name << " has won" << endl;
     }
 
 return 0;
@@ -60,9 +71,6 @@ return 0;
 // test_placeShip();
 // test_structureDonnees();
 // test_hitOrMiss();
-// test_isBoatSank();
-
-
 
 
 }

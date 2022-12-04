@@ -1,10 +1,12 @@
-//#v0.4.3
+//#v0.4.5
 #include <iostream>
 #include <random>
 #include <fstream>
+#include <windows.h>
 #include "typeDef.h"
 #include "functions.h"
 using namespace std;
+
 
 void titleGame()
 {
@@ -31,10 +33,10 @@ void titleGame()
 void albetGrid()
 {
     string albet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    cout << "   ";
+    cout << "    ";
     for (int j=1; j <= 2 ; j++)
     {
-        for(int i= 0; i < SIZE-2 ; i++)
+        for(int i= 0; i < SIZE_GRID-2 ; i++)
         {
             cout << albet[i] << " ";
         }
@@ -44,10 +46,10 @@ void albetGrid()
 
 void checkNameLength(string playerName)
 {
-        //check if the name of the player is not over SIZE characters
-         while (playerName.length() > SIZE || playerName == "")
+        //check if the name of the player is not over SIZE_GRID characters
+         while (playerName.length() > SIZE_GRID || playerName == "")
     {
-        cout << "Vous ne pouvez pas rentrer un pseudo vide ou de plus de "<< SIZE <<" charactere" << endl;
+        cout << "Vous ne pouvez pas rentrer un pseudo vide ou de plus de "<< SIZE_GRID <<" charactere" << endl;
         cout << "Rentrez a nouveau le nom du premier joueur svp" << endl;
         cin >> playerName;
     }
@@ -59,15 +61,15 @@ void centerName(string p1name, string p2name)
 {
     int p1nameLength = p1name.length();
     int p2nameLength = p2name.length();
-    int p1space = (SIZE*2 - p1nameLength)/2;
-    int p2space = (SIZE*2 - p2nameLength)/2;
+    int p1space = (SIZE_GRID*2 - p1nameLength)/2;
+    int p2space = (SIZE_GRID*2 - p2nameLength)/2;
     //center the name of the player 1
-    for (int i = 0; i < p1space; i++)
+    for (int i = 0; i < p1space+1; i++)
     {
         cout << " ";
     }
     //print the name of the player 1 in blue
-    cout << "\e[1;34m" << p1name << "\e[0m";
+    cout << p1name;
     //center the name of the player 2 (+1 for the space between the two grids)
     for (int i = 0; i < p1space+1; i++)
     {
@@ -83,14 +85,14 @@ void centerName(string p1name, string p2name)
         cout << " ";
     }
     //print the name of the player 2 in red
-     cout << "\033[1;31m" << p2name << "\033[0m";
+     cout << p2name;
 }
 
-void initializeGrid(Cell aGrid[][SIZE])
+void initializeGrid(Cell aGrid[][SIZE_GRID])
 {
-    for(int i=0; i < SIZE; i++)
+    for(int i=0; i < SIZE_GRID; i++)
     {
-        for(int j=0; j < SIZE; j++)
+        for(int j=0; j < SIZE_GRID; j++)
         {
             //initialize the grid to NONE and UNSHOT
             aGrid[i][j].ship = NONE;
@@ -112,21 +114,60 @@ void clearScreen()
 #endif
 }
 
+void styleGrid()
+{
+cout << "  ╭";
+for (int i = 3; i < SIZE_GRID*2; i++)
+
+    {
+        cout << "─";
+    }
+    cout << "╮";
+    cout << "  ";
+    cout << "╭";
+    for (int i = 3; i < SIZE_GRID*2; i++)
+    {
+        cout << "─";
+    }
+    cout << "╮";
+}
+
+void styleGridBottom()
+{
+    cout << "  ╰";
+    for (int i = 3; i < SIZE_GRID*2; i++)
+    {
+        cout << "─";
+    }
+    cout << "╯";
+    cout << "  ";
+    cout << "╰";
+    for (int i = 3; i < SIZE_GRID*2; i++)
+    {
+        cout << "─";
+    }
+    cout << "╯";
+
+}
+
 void displayGrid(Player & aPlayer, Player & anOpponent)
 {
+    SetConsoleOutputCP(CP_UTF8);
     centerName(aPlayer.name, anOpponent.name);
     cout << endl;
     albetGrid();
     cout << endl;
+    styleGrid();
+    cout << endl;
     //loop to display the grid
-    for (int i = 1; i < SIZE - 1; i++) {
+    for (int i = 1; i < SIZE_GRID - 1; i++) {
         // PLayer grid
-        cout << i << ' ';
         if (i < 10) {
-            cout << ' ';
+    cout << ' ' ;
         }
+        cout << i  << "│ ";
 
-        for (int j = 1; j < SIZE - 1; j++) {
+        for (int j = 1; j < SIZE_GRID - 1; j++) {
             //verify if there is a ship and print it
             if (aPlayer.grid[i][j].ship != NONE) {
                 cout << (int) aPlayer.grid[i][j].ship << ' ';
@@ -135,18 +176,24 @@ void displayGrid(Player & aPlayer, Player & anOpponent)
                 //else display the state of the cell
                 cout << (char) aPlayer.grid[i][j].state << ' ';
             }}
+            cout << "│";
+
 
         // anOpponent grids
-        cout << "  " << i << ' ';
         if (i < 10) {
-            cout << ' ';
+    cout << ' ' ;
         }
+        cout << i  << "│ ";
         //show only the state of the cell and not the ship
-        for (int j = 1; j < SIZE - 1; j++) {
+        for (int j = 1; j < SIZE_GRID - 1; j++) {
                 cout << (char) anOpponent.grid[i][j].state << ' ';
         }
+        cout << "│";
         cout << endl;
+
     }
+    styleGridBottom();
+    cout << endl;
 }
 
 int letterToNumber(char letter)
@@ -175,7 +222,7 @@ else
 }
 }
 
-bool placeShip(Cell grid[][SIZE], Placement place, Ship ship)
+bool placeShip(Cell grid[][SIZE_GRID], Placement place, Ship ship)
 
 {
 
@@ -184,7 +231,7 @@ bool placeShip(Cell grid[][SIZE], Placement place, Ship ship)
     {
         int colCoordi = letterToNumber(place.coordi.col);
         //check if the ship is placed in the grid
-        if (colCoordi + ship > SIZE - 1)
+        if (colCoordi + ship > SIZE_GRID - 1)
         {
             return false;
         }
@@ -210,7 +257,7 @@ bool placeShip(Cell grid[][SIZE], Placement place, Ship ship)
     {
         int colCoordi = letterToNumber(place.coordi.col);
         //check if the ship is placed in the grid
-        if (place.coordi.row + ship - 1 > SIZE - 2)
+        if (place.coordi.row + ship - 1 > SIZE_GRID - 2)
         {
             return false;
         }
@@ -261,7 +308,7 @@ void askPlayerToPlace(Player & aPlayer, Player & anOpponent)
             clearScreen();
             initializeGrid(aPlayer.grid);
             randomPlacement(aPlayer);
-            cout << "If this placement does not suit you, write R" << endl;
+            cout << "If this placement does not suit you, write R otherwise write anything else" << endl;
             cin >> userChoice;
         }
         clearScreen();
@@ -296,12 +343,12 @@ void askPlayerToPlace(Player & aPlayer, Player & anOpponent)
                 }
             displayGrid(aPlayer, anOpponent);
             clearScreen();
-        
-            }      
+
+            }
         }
 }
 
-bool alreadyShot(Cell aGrid[][SIZE], Coordinate someCoordi)
+bool alreadyShot(Cell aGrid[][SIZE_GRID], Coordinate someCoordi)
 {
     //check if the cell has already been shot
     if (aGrid[someCoordi.row][letterToNumber(someCoordi.col)].state == HIT || aGrid[someCoordi.row][letterToNumber(someCoordi.col)].state == MISS || aGrid[someCoordi.row][letterToNumber(someCoordi.col)].state == SINK)
@@ -311,7 +358,7 @@ bool alreadyShot(Cell aGrid[][SIZE], Coordinate someCoordi)
         return false;
 }
 
-bool hitOrMiss(Cell aGrid[][SIZE], Coordinate someCoordi)
+bool hitOrMiss(Cell aGrid[][SIZE_GRID], Coordinate someCoordi)
 {
     //check if the cell has a ship
     if (aGrid[someCoordi.row][letterToNumber(someCoordi.col)].ship != NONE)
@@ -331,6 +378,9 @@ void askPlayerToShot(Player& aPlayer, Player& anOpponent)
 {
     string place;
     Coordinate coordi;
+    ofstream logs;
+    logs.open("Coups joués.txt");
+
 
         displayGrid(aPlayer, anOpponent);
         //ask the player to shoot
@@ -350,10 +400,14 @@ void askPlayerToShot(Player& aPlayer, Player& anOpponent)
                 if (hitOrMiss(anOpponent.grid, coordi))
                 {
                     cout << "Hit!" << endl;
+                    aPlayer.score++;
+
                 }
+
                 else
                 {
                     cout << "Miss!" << endl;
+                    logs << "Player " << aPlayer.name << " shot at " << place << " and missed!" << endl;
                 }
             }
         }
@@ -417,20 +471,63 @@ void randomPlacement(Player& aPlayer)
  * \param aRow : la ligne
  * \param aCol : la colonne
  */
-bool isBoatSank(Cell aGrid[][SIZE], int aRow, int aCol)
+bool isBoatSankDir(Cell aGrid[][SIZE_GRID], Placement aPlace)
 {
-    bool sank = true;
-    Ship boat = aGrid[aRow][aCol].ship;
-    //check if the ship is sank
-    for (int iRow = 0; iRow < SIZE ; iRow++)
+    int nbHit = 0;
+    int nbCell = 0;
+    if (aPlace.dir == 'H')
     {
-        for (int iCol = 0; iCol < SIZE; iCol++)
+        for (int i = 0; i < SIZE_GRID; i++)
         {
-            if (aGrid[iRow][iCol].ship == boat && aGrid[iRow][iCol].state != HIT)
+            if (aGrid[aPlace.coordi.row][i].ship == aGrid[aPlace.coordi.row][letterToNumber(aPlace.coordi.col)].ship)
             {
-                sank = false;
+                nbCell++;
+                if (aGrid[aPlace.coordi.row][i].state == HIT)
+                {
+                    nbHit++;
+                }
             }
         }
     }
-    return sank;
+    else
+    {
+        for (int i = 0; i < SIZE_GRID; i++)
+        {
+            if (aGrid[i][letterToNumber(aPlace.coordi.col)].ship == aGrid[aPlace.coordi.row][letterToNumber(aPlace.coordi.col)].ship)
+            {
+                nbCell++;
+                if (aGrid[i][letterToNumber(aPlace.coordi.col)].state == HIT)
+                {
+                    nbHit++;
+                }
+            }
+        }
+    }
+    if (nbHit == nbCell)
+    {
+        return true;
+    }
+    return false;
+
 }
+
+bool isBoatSank(Cell aGrid[][SIZE_GRID], int aRow, int aCol)
+{
+    bool isSank;
+    for (int i=aRow-1; i<aRow+2; i++)
+        for (int j=aCol-65; j<aCol-62; j++)
+            if (aGrid[i][j].ship != NONE)
+            {
+                if (i != aRow && j == aCol)
+                {
+                    Placement tmpPlace = {{char(aCol+64), aRow}, 'V'};
+                    return isBoatSankDir(aGrid, tmpPlace);
+                }
+                else if (i == aRow && j != aCol)
+                {
+                    Placement tmpPlace = {{char(aCol+64), aRow}, 'H'};
+                    return isBoatSankDir(aGrid, tmpPlace);
+                }
+            }
+}
+

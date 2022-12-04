@@ -6,7 +6,7 @@
 using namespace std;
 
 //la dimension de la grille de jeu 10+2 pour détection du navire voisin
-const int SIZE = 12 ;
+const int SIZE_GRID = 12 ;
 
 // le nombre de navires de guerre
 const int NBSHIPS = 5;
@@ -54,7 +54,7 @@ struct Player
 {
     string name;
     int score;
-    Cell grid[SIZE][SIZE];
+    Cell grid[SIZE_GRID][SIZE_GRID];
 };
 
 // les coordonnées de la case sur la grille

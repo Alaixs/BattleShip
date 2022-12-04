@@ -12,9 +12,9 @@ using namespace std;
 void titleGame();
 
 /*
-* \brief Check if the name of the player is not over SIZE characters
+* \brief Check if the name of the player is not over SIZE_GRID_GRID characters
 * \param playerName : the name of the player
-* \return true if the name is not over SIZE characters
+* \return true if the name is not over SIZE_GRID_GRID characters
 */
 void checkNameLength(string playerName);
 
@@ -27,8 +27,8 @@ void checkNameLength(string playerName);
 void centerName(string p1name, string p2name);
 
 /*
- * \brief Affiche toutes les lettres en fonction de SIZE 
- * \affiche des lettre en fonction de SIZE 
+ * \brief Affiche toutes les lettres en fonction de SIZE_GRID_GRID 
+ * \affiche des lettre en fonction de SIZE_GRID_GRID 
  * \return void
  */
 void albetGrid();
@@ -38,7 +38,7 @@ void albetGrid();
  * \param une grille
  * \return void
  */
-void initializeGrid(Cell aGrid[][SIZE]);
+void initializeGrid(Cell aGrid[][SIZE_GRID]);
 
 /*
  * \brief Affiche les grilles des deux joueurs
@@ -74,7 +74,7 @@ bool checkCoordinate(string aPlace, Coordinate & sommeCoordi);
  * \param aShip : le type de navire (donc sa taille)
  * \return true si le placement est valide et effectué, false sinon
  */
-bool placeShip(Cell grid[][SIZE], Placement place, Ship ship);
+bool placeShip(Cell grid[][SIZE_GRID], Placement place, Ship ship);
 
 /*
  * \brief demande au joueur de placer chaque navire, vérifie les coordonnées
@@ -91,7 +91,7 @@ void askPlayerToPlace(Player & aPlayer, Player & anOpponent);
  * \param someCoordi : les coordonnées du tir
  * \return true si le coup a déjà été tiré
  */
-bool alreadyShot(Cell aGrid[][SIZE], Coordinate someCoordi);
+bool alreadyShot(Cell aGrid[][SIZE_GRID], Coordinate someCoordi);
 
 /* \brief modifie l'état d'une case de la grille de l'adversaire
  * selon le coup joué
@@ -99,7 +99,7 @@ bool alreadyShot(Cell aGrid[][SIZE], Coordinate someCoordi);
  * \param someCoordi : les coordonnées du tir
  * \return true si HIT
  */
-bool hitOrMiss(Cell aGrid[][SIZE], Coordinate someCoordi);
+bool hitOrMiss(Cell aGrid[][SIZE_GRID], Coordinate someCoordi);
 
 /*
  * \brief affiche les grilles (displayGrid) des joueurs puis demande au joueur
@@ -127,7 +127,7 @@ void randomPlacement(Player& aPlayer);
  * \param aRow : la ligne
  * \param aCol : la colonne
  */
-bool isBoatSank(Cell aGrid[][SIZE], int aRow, int aCol);
+bool isBoatSank(Cell aGrid[][SIZE_GRID], int aRow, int aCol);
 
 
 
