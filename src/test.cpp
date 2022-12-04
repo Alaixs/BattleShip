@@ -746,7 +746,7 @@ void test_placeShip()
     cout << "Totals: " << pass << " passed, " << failed << " failed" << endl;
     cout << "********* Finished testing of placeShipV2 *********" << endl;
 }
-/*
+
 void test_aleadyShot()
 {
     int pass = 0;
@@ -985,4 +985,3 @@ void test_isBoatSank()
     cout << "Totals: " << pass << " passed, " << failed << " failed" << endl;
     cout << "********* Finished testing of isBoatSank *********" << endl;
 }
-*/

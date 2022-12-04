@@ -25,7 +25,7 @@ void test_placeShip();
 /*
  * \brief Test de la fonction aleadyShot
  */
-void test_aleadyShot();
+void test_alreadyShot();
 
 /*
  * \brief Test de la fonction hitOrMiss

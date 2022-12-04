@@ -1,13 +1,12 @@
 //#v0.4.2
-//TODO : remake askPlayerToPlace // See char to string in PlaceShip // remake random placement // isboatsank bug remake plz//add decoration aroudn grid
+//TODO : remake askPlayerToPlace   // isboatsank bug remake plz//add decoration aroudn grid
 #include <iostream>
+#include <fstream>
 #include "typeDef.h"
 #include "functions.h"
 #include "test.h"
-
 using namespace std;
 
-string aPlace;
 
 int main()
 {
@@ -20,10 +19,7 @@ int main()
     initializeGrid(p1.grid);
     initializeGrid(p2.grid);
 
-    //test to see if the grid is initialized correctly with a ship
-    //p1.grid[3][2].ship = CARRIER;
-
-titleGame();
+    titleGame();
 
     //Check if the name is not over SIZE characters and if it is not empty
     cout << "rentrer le nom du premier joueur" << endl;
@@ -33,9 +29,6 @@ titleGame();
     cout << "Rentrer le nom du deuxieme joueur" << endl;
     cin >> p2.name;
     checkNameLength(p2.name);
-
-    centerName(p1.name, p2.name);
-    cout << endl;
 
     displayGrid(p1, p2);
     cout << endl;
@@ -60,16 +53,16 @@ askPlayerToPlace(p2, p1);
     }
 
 return 0;
+
+
+// titleGame();
+// test_initializeGrid();
+// test_placeShip();
+// test_structureDonnees();
+// test_hitOrMiss();
+// test_isBoatSank();
+
+
+
+
 }
-
-
-
-
-
-//test_initializeGrid();
-//test_placeShip();
-//test_alreadyShot();
-//test_structureDonnees();
-//test_hitOrMiss();
-//test_isBoatSank();
-

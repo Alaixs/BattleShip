@@ -1,6 +1,7 @@
-//#v0.4.2
+//#v0.4.3
 #include <iostream>
 #include <random>
+#include <fstream>
 #include "typeDef.h"
 #include "functions.h"
 using namespace std;
@@ -113,6 +114,8 @@ void clearScreen()
 
 void displayGrid(Player & aPlayer, Player & anOpponent)
 {
+    centerName(aPlayer.name, anOpponent.name);
+    cout << endl;
     albetGrid();
     cout << endl;
     //loop to display the grid
@@ -243,15 +246,27 @@ void askPlayerToPlace(Player & aPlayer, Player & anOpponent)
     Placement placement;
     bool state = false;
     //adk if the player want to place the ship manually
+    cout << aPlayer.name << ", it's your turn to place your ships !" << endl;
     cout << "Do you want to place your ships manually? (Y/N)" << endl;
     cin >> userChoice;
     //if the player want to place the ship randomly call function randomPlacement
     if (userChoice == "N" || userChoice == "n")
     {
-        cout << "Random placement" << endl;
+        cout << "Here are your randomly placed boats" << endl;
         randomPlacement(aPlayer);
-        displayGrid(aPlayer, anOpponent);
+        cout << "If this placement does not suit you, write R otherwise write anything else" << endl;
+        cin >> userChoice;
+        while (userChoice == "R" || userChoice == "r")
+        {
+            clearScreen();
+            initializeGrid(aPlayer.grid);
+            randomPlacement(aPlayer);
+            cout << "If this placement does not suit you, write R" << endl;
+            cin >> userChoice;
+        }
+        clearScreen();
     }
+    else{
 
     //boucle pour placer les navires
     for (int i = 0; i < NBSHIPS; i++)
@@ -280,10 +295,9 @@ void askPlayerToPlace(Player & aPlayer, Player & anOpponent)
                     placement.coordi.row = nbRow;
                 }
             displayGrid(aPlayer, anOpponent);
-
-
-        //display the grid
-        clearScreen();
+            clearScreen();
+        
+            }      
         }
 }
 
@@ -353,11 +367,10 @@ void askPlayerToShot(Player& aPlayer, Player& anOpponent)
 
 void generateNumber(int& someNumber)
 {
-    const int MIN=0, MAX=10;
+    const int MIN=1, MAX=10;
      random_device rd;
      default_random_engine eng(rd());
      uniform_int_distribution<int> distr(MIN, MAX);
-     cout << distr(eng) << endl;
      someNumber= distr(eng);
 }
 
@@ -377,7 +390,7 @@ void randomPlacement(Player& aPlayer)
             valid = false;
             generateNumber(placement.coordi.row);
             generateNumber(colcoordi);
-            colcoordi += 65;
+            colcoordi += 64;
             placement.coordi.col = colcoordi;
             if (placement.coordi.row % 2 == 0)
             {
@@ -390,7 +403,6 @@ void randomPlacement(Player& aPlayer)
             //check if the ship is valid and place it
             if (placeShip(aPlayer.grid, placement, boat[i]))
             {
-                cout << "passed" <<endl;
                 valid = true;
             }
         } while (!valid);
