@@ -1,4 +1,4 @@
-//#v0.4.5
+//#v0.4.6
 //TODO : isboatsank bug remake plz // Try to log output // Try to change some color
 #include <iostream>
 #include <fstream>
@@ -11,7 +11,7 @@ using namespace std;
 int main()
 {
     
-
+    test_isBoatSank();
     system("color 9F");
     //Creation de joueur 1 et 2
     struct Player p1;

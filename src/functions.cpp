@@ -1,4 +1,4 @@
-//#v0.4.5
+//#v0.4.6
 #include <iostream>
 #include <random>
 #include <fstream>
@@ -378,9 +378,8 @@ void askPlayerToShot(Player& aPlayer, Player& anOpponent)
 {
     string place;
     Coordinate coordi;
-    ofstream logs;
-    logs.open("Coups joués.txt");
-
+    ofstream myfile;
+    myfile.open ("Attemps.txt");
 
         displayGrid(aPlayer, anOpponent);
         //ask the player to shoot
@@ -399,15 +398,13 @@ void askPlayerToShot(Player& aPlayer, Player& anOpponent)
                 //check if the shot is a hit or a miss
                 if (hitOrMiss(anOpponent.grid, coordi))
                 {
+                    myfile << aPlayer.name << " shot at " << place << " and hit !" << endl;
                     cout << "Hit!" << endl;
                     aPlayer.score++;
-
                 }
-
                 else
                 {
                     cout << "Miss!" << endl;
-                    logs << "Player " << aPlayer.name << " shot at " << place << " and missed!" << endl;
                 }
             }
         }
@@ -415,6 +412,7 @@ void askPlayerToShot(Player& aPlayer, Player& anOpponent)
         {
             cout << "Error: the coordinate is not valid" << endl;
         }
+         myfile.close();
         clearScreen();
 
 }
@@ -460,74 +458,34 @@ void randomPlacement(Player& aPlayer)
                 valid = true;
             }
         } while (!valid);
-
+}
 
 }
-    displayGrid(aPlayer, aPlayer);
-}
-/*
- * \brief détermine si un bateau est coulé (toutes ses cases sont HIT)
- * \param aGrid : la grille
- * \param aRow : la ligne
- * \param aCol : la colonne
- */
-bool isBoatSankDir(Cell aGrid[][SIZE_GRID], Placement aPlace)
+bool isBoatSank(Cell aGrid[][SIZE_GRID], int aRow, int aCol)
 {
-    int nbHit = 0;
-    int nbCell = 0;
-    if (aPlace.dir == 'H')
+    //create a variable to count the number of hit cells
+    int touched_cell = 0;
+    //loop to add the number of hit cells in touched_cell
+    for (int iRow = aRow - aGrid[aRow][aCol].ship; iRow < aRow + aGrid[aRow][aCol].ship; iRow++)
     {
-        for (int i = 0; i < SIZE_GRID; i++)
-        {
-            if (aGrid[aPlace.coordi.row][i].ship == aGrid[aPlace.coordi.row][letterToNumber(aPlace.coordi.col)].ship)
+            for (int iCol = aCol - aGrid[aRow][aCol].ship; iCol < aCol + aGrid[aRow][aCol].ship; iCol++)
             {
-                nbCell++;
-                if (aGrid[aPlace.coordi.row][i].state == HIT)
-                {
-                    nbHit++;
-                }
+                if (aGrid[iRow][iCol].state == HIT) touched_cell++;
             }
-        }
     }
-    else
+
+    //if the number of touched cell is equal to the size of the ship, the ship is sunk
+    if (touched_cell == aGrid[aRow][aCol].ship)
     {
-        for (int i = 0; i < SIZE_GRID; i++)
-        {
-            if (aGrid[i][letterToNumber(aPlace.coordi.col)].ship == aGrid[aPlace.coordi.row][letterToNumber(aPlace.coordi.col)].ship)
-            {
-                nbCell++;
-                if (aGrid[i][letterToNumber(aPlace.coordi.col)].state == HIT)
+        for (int iRow = aRow - aGrid[aRow][aCol].ship; iRow < aRow + aGrid[aRow][aCol].ship; iRow++)
+        {      
+                for (int iCol = aCol - aGrid[aRow][aCol].ship; iCol < aCol + aGrid[aRow][aCol].ship; iCol++)
                 {
-                    nbHit++;
+                    //change the state of the cells to SINK if all the cells of the ship are touched
+                    if (aGrid[iRow][iCol].state == HIT) aGrid[iRow][iCol].state = SINK;
                 }
-            }
         }
-    }
-    if (nbHit == nbCell)
-    {
         return true;
     }
     return false;
-
 }
-
-bool isBoatSank(Cell aGrid[][SIZE_GRID], int aRow, int aCol)
-{
-    bool isSank;
-    for (int i=aRow-1; i<aRow+2; i++)
-        for (int j=aCol-65; j<aCol-62; j++)
-            if (aGrid[i][j].ship != NONE)
-            {
-                if (i != aRow && j == aCol)
-                {
-                    Placement tmpPlace = {{char(aCol+64), aRow}, 'V'};
-                    return isBoatSankDir(aGrid, tmpPlace);
-                }
-                else if (i == aRow && j != aCol)
-                {
-                    Placement tmpPlace = {{char(aCol+64), aRow}, 'H'};
-                    return isBoatSankDir(aGrid, tmpPlace);
-                }
-            }
-}
-

@@ -135,19 +135,19 @@ void test_structureDonnees()
     cout << endl;
     pass = 0;
     failed = 0;
-    cout << "********* Start testing of const SIZE *********" << endl;
-    if (SIZE == 12)
+    cout << "********* Start testing of const SIZE_GRID *********" << endl;
+    if (SIZE_GRID == 12)
     {
-        cout << "PASS \t: SIZE" << endl;
+        cout << "PASS \t: SIZE_GRID" << endl;
         pass++;
     }
     else
     {
-        cout << "FAIL! \t: SIZE" << "\n\tActual " << SIZE << "\n\texpected 12" << endl;
+        cout << "FAIL! \t: SIZE_GRID" << "\n\tActual " << SIZE_GRID << "\n\texpected 12" << endl;
         failed++;
     }
     cout << "Totals: " << pass << " passed, " << failed << " failed" << endl;
-    cout << "********* Finished testing of const SIZE *********" << endl;
+    cout << "********* Finished testing of const SIZE_GRID *********" << endl;
 
     cout << endl;
     pass = 0;
@@ -420,11 +420,11 @@ void test_checkCoordinate()
     cout << "********* Finished testing of checkCoordinate *********" << endl;
 }
 
-void initGrid(Cell aGrid[][SIZE])
+void initGrid(Cell aGrid[][SIZE_GRID])
 {
-    for (int row = 0; row < SIZE; row++)
+    for (int row = 0; row < SIZE_GRID; row++)
     {
-        for (int column = 0; column < SIZE; column++)
+        for (int column = 0; column < SIZE_GRID; column++)
         {
             aGrid[row][column].ship = NONE;
             aGrid[row][column].state = UNSHOT;
@@ -432,11 +432,11 @@ void initGrid(Cell aGrid[][SIZE])
     }
 }
 
-bool compareGrid(Cell aGrid1[][SIZE], Cell AGrid2[][SIZE])
+bool compareGrid(Cell aGrid1[][SIZE_GRID], Cell AGrid2[][SIZE_GRID])
 {
-    for (int i=0; i<SIZE; i++)
+    for (int i=0; i<SIZE_GRID; i++)
     {
-        for (int j=0; j<SIZE; j++)
+        for (int j=0; j<SIZE_GRID; j++)
         {
             if (aGrid1[i][j].state != AGrid2[i][j].state or aGrid1[i][j].ship != AGrid2[i][j].ship)
             {
@@ -451,8 +451,8 @@ void test_initializeGrid()
 {
     int pass = 0;
     int failed = 0;
-    Cell grid[SIZE][SIZE];
-    Cell output[SIZE][SIZE];
+    Cell grid[SIZE_GRID][SIZE_GRID];
+    Cell output[SIZE_GRID][SIZE_GRID];
     cout << "********* Start testing of initializeGrid *********" << endl;
     initializeGrid(grid);
     initGrid(output);
@@ -474,8 +474,8 @@ void test_placeShip()
 {
     int pass = 0;
     int failed = 0;
-    Cell grid[SIZE][SIZE];
-    Cell output[SIZE][SIZE];
+    Cell grid[SIZE_GRID][SIZE_GRID];
+    Cell output[SIZE_GRID][SIZE_GRID];
     Placement position;
     Ship boat;
     cout << "********* Start testing of placeShip *********" << endl;
@@ -751,7 +751,7 @@ void test_aleadyShot()
 {
     int pass = 0;
     int failed = 0;
-    Cell grid[SIZE][SIZE];
+    Cell grid[SIZE_GRID][SIZE_GRID];
     Coordinate coordinate;
     cout << "********* Start testing of aleadyShot *********" << endl;
     // G8 true HIT
@@ -821,7 +821,7 @@ void test_hitOrMiss()
 {
     int pass = 0;
     int failed = 0;
-    Cell grid[SIZE][SIZE];
+    Cell grid[SIZE_GRID][SIZE_GRID];
     Coordinate coordinate;
     cout << "********* Start testing of hitOrMiss *********" << endl;
     // C7 Hit
@@ -892,7 +892,7 @@ void test_isBoatSank()
 {
     int pass = 0;
     int failed = 0;
-    Cell grid[SIZE][SIZE];
+    Cell grid[SIZE_GRID][SIZE_GRID];
     int row;
     int column;
     cout << "********* Start testing of isBoatSank *********" << endl;
