@@ -129,6 +129,12 @@ void randomPlacement(Player& aPlayer);
  */
 bool isBoatSank(Cell aGrid[][SIZE_GRID], int aRow, int aCol);
 
+/*
+ * \brief permet à l'ia de shot aléatoirement
+ * \param aPlayer : L'IA
+ * \return void
+*/
+void iaShot(Player& aPlayer, Player& anOpponent);
 
 
 #endif // FUNCTIONS_H

@@ -1,5 +1,5 @@
-//#v0.4.6
-//TODO : isboatsank bug remake plz // Try to log output // Try to change some color
+//#v0.4.8
+//TODO : // Try to log output // Try to change some color
 #include <iostream>
 #include <fstream>
 #include "typeDef.h"
@@ -10,8 +10,6 @@ using namespace std;
 
 int main()
 {
-    
-    test_isBoatSank();
     system("color 9F");
     //Creation de joueur 1 et 2
     struct Player p1;
@@ -23,10 +21,80 @@ int main()
     p1.score = 0;
     p2.score = 0;
 
-    titleGame();
-   
+    test_isBoatSank();
 
-    //Check if the name is not over SIZE characters and if it is not empty
+    titleGame();
+    //ask if the player want to play versus the computer or versus another player
+    int choice = 0;
+    cout << "Do you want play versus a player or versus the computer ?" <<endl;
+    cout << "1. Play versus the computer" << endl;
+    cout << "2. Play versus another player" << endl;
+    cin  >> choice;
+    if(choice == 1)
+    {
+        cout << "Enter your name" <<endl;
+        cin >> p1.name;
+        checkNameLength(p1.name);
+        p2.name = "Computer";
+
+        displayGrid(p1, p2);
+        cout << endl;
+        clearScreen();
+        askPlayerToPlace(p1, p2);
+        randomPlacement(p2);
+        cout << "1.Do you want play with slave of 3 shot ?" <<endl;
+        cout << "2.Do you want play with normal rules?" <<endl;
+        cin >> choice;
+        if(choice == 1)
+        {
+             while (p1.score <= NBCELLS || p2.score <= NBCELLS)
+            {
+            askPlayerToShot(p1, p2);
+            askPlayerToShot(p1, p2);
+            askPlayerToShot(p1, p2);
+            iaShot(p2, p1);
+            iaShot(p2, p1);
+            iaShot(p2, p1);
+            }
+            if (p1.score == NBCELLS)
+    {
+        cout << "The Player " << p1.name << " has won" << endl;
+    }
+    else
+    {
+        cout << "The Player " << p2.name << " has won" << endl;
+    }
+
+        }
+        else if (choice == 2)
+        {
+         while (p1.score <= NBCELLS || p2.score <= NBCELLS)
+            {
+            askPlayerToShot(p1, p2);
+            iaShot(p2, p1);
+        }
+            if (p1.score == NBCELLS)
+    {
+        cout << "The Player " << p1.name << " has won" << endl;
+    }
+    else
+    {
+        cout << "The Player " << p2.name << " has won" << endl;
+    }
+        
+        
+        }
+        else
+        {
+            cout << "You have to choose between 1 and 2" << endl;
+        }
+    
+
+
+    }
+    else if(choice == 2)
+    {
+            //Check if the name is not over SIZE characters and if it is not empty
     cout << "Enter the name of the first player" << endl;
     cin >> p1.name;
     checkNameLength(p1.name);
@@ -35,23 +103,22 @@ int main()
     cin >> p2.name;
     checkNameLength(p2.name);
 
-    displayGrid(p1, p2);
-    cout << endl;
+    askPlayerToPlace(p1, p2);
+    askPlayerToPlace(p2, p1);
 
-clearScreen();
+cout << "1.Do you want play with slave of 3 shot ?" <<endl;
+cout << "2.Do you want play with normal rules?" <<endl;
+cin >> choice;
+if(choice == 1)
+{
 
-ofstream logs;
-logs.open("Coups joués.txt");
-logs << "Here are the moves you played during your last game.\n";
-logs <<"Player 1: " << p1.name << "Player 2: "<< p2.name << endl;
-
-
-askPlayerToPlace(p1, p2);
-askPlayerToPlace(p2, p1);
-
-    while (p1.score <= NBCELLS || p2.score <= NBCELLS)
+ while (p1.score <= NBCELLS || p2.score <= NBCELLS)
     {
         askPlayerToShot(p1, p2);
+        askPlayerToShot(p1, p2);
+        askPlayerToShot(p1, p2);
+        askPlayerToShot(p2, p1);
+        askPlayerToShot(p2, p1);
         askPlayerToShot(p2, p1);
     }
     if (p1.score == NBCELLS)
@@ -63,14 +130,40 @@ askPlayerToPlace(p2, p1);
         cout << "The Player " << p2.name << " has won" << endl;
     }
 
+}
+else if(choice == 2)
+{
+ while (p1.score <= NBCELLS || p2.score <= NBCELLS)
+    {
+        askPlayerToShot(p1, p2);
+        
+    }
+    if (p1.score == NBCELLS)
+    {
+        cout << "The Player " << p1.name << " has won" << endl;
+    }
+    else
+    {
+        cout << "The Player " << p2.name << " has won" << endl;
+    }
+    }}
+else
+{
+
+    cout << "Wrong number" << endl;
+}
+   
+clearScreen();
+
 return 0;
-
-
+    
+}
 // titleGame();
 // test_initializeGrid();
 // test_placeShip();
 // test_structureDonnees();
 // test_hitOrMiss();
+// test_isBoatSank();
 
 
-}
+

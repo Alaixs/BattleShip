@@ -301,6 +301,7 @@ void askPlayerToPlace(Player & aPlayer, Player & anOpponent)
     {
         cout << "Here are your randomly placed boats" << endl;
         randomPlacement(aPlayer);
+        displayGrid(aPlayer, anOpponent);
         cout << "If this placement does not suit you, write R otherwise write anything else" << endl;
         cin >> userChoice;
         while (userChoice == "R" || userChoice == "r")
@@ -308,6 +309,7 @@ void askPlayerToPlace(Player & aPlayer, Player & anOpponent)
             clearScreen();
             initializeGrid(aPlayer.grid);
             randomPlacement(aPlayer);
+            displayGrid(aPlayer, anOpponent);
             cout << "If this placement does not suit you, write R otherwise write anything else" << endl;
             cin >> userChoice;
         }
@@ -343,7 +345,6 @@ void askPlayerToPlace(Player & aPlayer, Player & anOpponent)
                 }
             displayGrid(aPlayer, anOpponent);
             clearScreen();
-
             }
         }
 }
@@ -360,19 +361,23 @@ bool alreadyShot(Cell aGrid[][SIZE_GRID], Coordinate someCoordi)
 
 bool hitOrMiss(Cell aGrid[][SIZE_GRID], Coordinate someCoordi)
 {
-    //check if the cell has a ship
-    if (aGrid[someCoordi.row][letterToNumber(someCoordi.col)].ship != NONE)
+    bool isShooted = alreadyShot(aGrid ,someCoordi);
+    if (!isShooted)
     {
-        //check if the ship is sunk
-        aGrid[someCoordi.row][letterToNumber(someCoordi.col)].state = HIT;
-        return true;
+        if (aGrid[someCoordi.row][someCoordi.col-64].ship)
+        {
+            aGrid[someCoordi.row][someCoordi.col-64].state = HIT;
+            isBoatSank(aGrid, someCoordi.row, someCoordi.col-64);
+            return true;
+        }
+        else {
+            aGrid[someCoordi.row][someCoordi.col-64].state = MISS;
+            return false;
+        }
     }
-    else
-    {   //else the cell is a miss
-        aGrid[someCoordi.row][letterToNumber(someCoordi.col)].state = MISS;
-        return false;
-    }
+    return false;
 }
+
 
 void askPlayerToShot(Player& aPlayer, Player& anOpponent)
 {
@@ -419,7 +424,7 @@ void askPlayerToShot(Player& aPlayer, Player& anOpponent)
 
 void generateNumber(int& someNumber)
 {
-    const int MIN=1, MAX=10;
+    const int MIN=1, MAX=SIZE_GRID-2;
      random_device rd;
      default_random_engine eng(rd());
      uniform_int_distribution<int> distr(MIN, MAX);
@@ -463,29 +468,75 @@ void randomPlacement(Player& aPlayer)
 }
 bool isBoatSank(Cell aGrid[][SIZE_GRID], int aRow, int aCol)
 {
-    //create a variable to count the number of hit cells
-    int touched_cell = 0;
-    //loop to add the number of hit cells in touched_cell
-    for (int iRow = aRow - aGrid[aRow][aCol].ship; iRow < aRow + aGrid[aRow][aCol].ship; iRow++)
-    {
-            for (int iCol = aCol - aGrid[aRow][aCol].ship; iCol < aCol + aGrid[aRow][aCol].ship; iCol++)
+    for (int i=aRow-1; i<aRow+2; i++)
+        for (int j=aCol-1; j<aCol+2; j++)
+            if (aGrid[i][j].ship != NONE)
             {
-                if (aGrid[iRow][iCol].state == HIT) touched_cell++;
-            }
-    }
-
-    //if the number of touched cell is equal to the size of the ship, the ship is sunk
-    if (touched_cell == aGrid[aRow][aCol].ship)
-    {
-        for (int iRow = aRow - aGrid[aRow][aCol].ship; iRow < aRow + aGrid[aRow][aCol].ship; iRow++)
-        {      
-                for (int iCol = aCol - aGrid[aRow][aCol].ship; iCol < aCol + aGrid[aRow][aCol].ship; iCol++)
+                if (i != aRow && j == aCol)
                 {
-                    //change the state of the cells to SINK if all the cells of the ship are touched
-                    if (aGrid[iRow][iCol].state == HIT) aGrid[iRow][iCol].state = SINK;
+                    while (aGrid[aRow-1][aCol].ship)
+                        aRow--;
+                    for (int i=0; i<aGrid[aRow][aCol].ship; i++)
+                        if (aGrid[aRow+i][aCol].state != HIT)
+                            return false;
+                    for (int i=0; i<aGrid[aRow][aCol].ship; i++)
+                        aGrid[aRow+i][aCol].state = SINK;
+                    return true;
                 }
+                else if (i == aRow && j != aCol)
+                {
+                    while (aGrid[aRow][aCol-1].ship)
+                        aCol--;
+                    for (int i=0; i<aGrid[aRow][aCol].ship; i++)
+                        if (aGrid[aRow][aCol+i].state != HIT)
+                            return false;
+                    for (int i=0; i<aGrid[aRow][aCol].ship; i++)
+                        aGrid[aRow][aCol+i].state = SINK;
+                    return true;
+                }
+            }
+}
+
+void iaShot(Player& aPlayer, Player& anOpponent)
+{
+bool wellShot = false;
+Coordinate coordi;
+string place;
+int nb;
+char letter;
+
+do
+{
+    generateNumber(nb);
+    letter = nb+64;
+    place[0] = letter;
+    generateNumber(nb);
+    place[1] = nb;
+
+        if (checkCoordinate(place, coordi))
+        {
+            //check if the cell has already been shot
+            if (alreadyShot(anOpponent.grid, coordi))
+            {
+                wellShot = false;
+            }
+            else
+            {
+                //check if the shot is a hit or a miss
+                if (hitOrMiss(anOpponent.grid, coordi))
+                {
+                    cout << "The computer Hit!" << endl;
+                    aPlayer.score++;
+                    wellShot = true;
+                }
+                else
+                {
+                    cout << "The computer Miss!" << endl;
+                    wellShot = true;
+                }
+            }
+            wellShot = false;
         }
-        return true;
-    }
-    return false;
+        
+    } while (wellShot);
 }
